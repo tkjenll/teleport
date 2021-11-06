@@ -3457,7 +3457,7 @@ func (g *GRPCServer) CreateSession(ctx context.Context, req *proto.CreateSession
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
-	session, err := auth.ServerWithRoles.CreateSessionV2(ctx, req)
+	session, err := auth.ServerWithRoles.CreateSessionTracker(ctx, req)
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
@@ -3475,7 +3475,7 @@ func (g *GRPCServer) GetActiveSessions(ctx context.Context, req *empty.Empty) (*
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
-	sessions, err := auth.ServerWithRoles.GetActiveSessionsV2(ctx)
+	sessions, err := auth.ServerWithRoles.GetActiveSessionTrackers(ctx)
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
@@ -3498,7 +3498,7 @@ func (g *GRPCServer) RemoveSession(ctx context.Context, req *proto.RemoveSession
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
-	err = auth.ServerWithRoles.RemoveSessionV2(ctx, req.SessionID)
+	err = auth.ServerWithRoles.RemoveSessionTracker(ctx, req.SessionID)
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
@@ -3510,7 +3510,7 @@ func (g *GRPCServer) UpdateSession(ctx context.Context, req *proto.UpdateSession
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
-	err = auth.ServerWithRoles.UpdateSessionV2(ctx, req)
+	err = auth.ServerWithRoles.UpdateSessionTracker(ctx, req)
 	if err != nil {
 		return nil, trace.Wrap(err)
 	}
