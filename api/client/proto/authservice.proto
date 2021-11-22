@@ -1396,6 +1396,9 @@ message CreateSessionRequest {
         (gogoproto.nullable) = false,
         (gogoproto.jsontag) = "expires,omitempty"
     ];
+
+    // The Kubernetes cluster this session belongs to.
+    string KubernetesCluster = 11 [ (gogoproto.jsontag) = "kubernetes_cluster,omitempty" ];
 }
 
 // GetActiveSessionsResponse is a response containing active sessions.
