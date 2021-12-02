@@ -374,6 +374,36 @@ func FromEventFields(fields EventFields) (apievents.AuditEvent, error) {
 			return nil, trace.Wrap(err)
 		}
 		return &e, nil
+	case PostgresParseEvent:
+		var e events.PostgresParse
+		if err := utils.FastUnmarshal(data, &e); err != nil {
+			return nil, trace.Wrap(err)
+		}
+		return &e, nil
+	case PostgresBindEvent:
+		var e events.PostgresBind
+		if err := utils.FastUnmarshal(data, &e); err != nil {
+			return nil, trace.Wrap(err)
+		}
+		return &e, nil
+	case PostgresExecuteEvent:
+		var e events.PostgresExecute
+		if err := utils.FastUnmarshal(data, &e); err != nil {
+			return nil, trace.Wrap(err)
+		}
+		return &e, nil
+	case PostgresCloseEvent:
+		var e events.PostgresClose
+		if err := utils.FastUnmarshal(data, &e); err != nil {
+			return nil, trace.Wrap(err)
+		}
+		return &e, nil
+	case PostgresFunctionCallEvent:
+		var e events.PostgresFunctionCall
+		if err := utils.FastUnmarshal(data, &e); err != nil {
+			return nil, trace.Wrap(err)
+		}
+		return &e, nil
 	case KubeRequestEvent:
 		var e events.KubeRequest
 		if err := utils.FastUnmarshal(data, &e); err != nil {
