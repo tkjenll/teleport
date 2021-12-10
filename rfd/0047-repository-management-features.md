@@ -240,26 +240,45 @@ The backport bot will only support merged pull requests.
 
 #### Process 
 
-The process of backporting a branch is checking out the targeted branch and using `git cherry-pick` with the merge commit. The following process will happen for every branch label in the pull request: 
+The `go-github` library will be used to do the backporting. Github doesn't support `cherry-pick`-ing directly with its API. In order to complete a `cherry-pick`, the bot will need to follow these steps: 
 
-- Checkout the target branch. 
-- Checkout a new branch.
-- Cherry pick the merge commit against the new branch. 
-- Open a pull request with the changes.
+- Get pull request head commit.
+- Get the target branch.
+- Create a new branch off of the target branch.
+-  Create a _temporary_ commit with the new branch `tree` and the parent being the `cherry-pick` commit parent.
+-  Update the newly created branch's HEAD to point at the temporary commit.
+-  Merge the temporary commit onto the new branch. 
+-  Get the merge commit tree. 
+  -  The merge tree will have a tree size of 1 at this point.
+-  Get the new branch HEAD sha.
+-  Create a commit with the merge tree and the new branch HEAD sha.
+-  Update the new branch with the commit created at the HEAD in the step prior. 
+-  Open a pull request. 
+
+
+ _This implementation was inspired by this [Stack Overflow post](https://stackoverflow.com/questions/53859199/how-to-cherry-pick-through-githubs-api). The extra step that was added to the backporting process was creating a new branch off of the target branch._
 
  
 If the merge is clean, the changes will be opened up in a pull request and the original author will be notified via comment. If not, a comment will be posted on the pull request that requested the backport stating that the bot was unable to backport cleanly to open a PR. In the latter case, the bot will fail and the author will need to manually open up their own pull requests and backport their changes. 
 
-`git2go` is a library that wraps the functionality of `libgit2` and will be used for the backporting steps, with the exception of the comment in an unclean backport. The Github API will be used, via the [`go-github`](https://github.com/google/go-github) library, to post the comment.  
+Pull Request Attributes: 
+
+| Field     | Contents |
+| ----------- | ----------- |
+| Title      | [Auto Backport] < Original PR Title >     |
+| Branch name   | auto-backport-< cherry-picked-sha >   |
+| Body   | Original PR body    |
+| Commit message   | Original commit message   |
 
 
-Example comment: 
+Example failed backport comment: 
 ```
 Failed to open up pull requests to backport changes to <branch>, <branch>, <branch>.
 ```
 
-#### Permissions 
+#### Additional Permissions 
 
-To support automatic backporting, `pull-requests:write` and `issues:write` permissions will need to be granted to the Github token. Write access to `pull-requests` is needed for opening up a pull request in the repository and write access to `issues` will allow posting comments on pull requests in the event of a failed backport.
+To support automatic backporting, `contents:write` and `issues:write` permissions will need to be granted to the Github token. Write access to `contents` is needed for creating new branches and merging the temporary commit onto the new branch. Write access to `issues` will allow posting comments on pull requests in the event of a failed backport. 
 
+`pull-requests:write` is the only existing permission the backport bot will need for opening up pull requests. 
 
