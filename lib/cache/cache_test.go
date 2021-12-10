@@ -1252,7 +1252,7 @@ func (s *CacheSuite) TestRoles(c *check.C) {
 	p := s.newPackForNode(c)
 	defer p.Close()
 
-	role, err := types.NewRole("role1", types.RoleSpecV4{
+	role, err := types.NewRole("role1", types.RoleSpecV5{
 		Options: types.RoleOptions{
 			MaxSessionTTL: types.Duration(time.Hour),
 		},
