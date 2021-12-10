@@ -282,3 +282,6 @@ To support automatic backporting, `contents:write` and `issues:write` permission
 
 `pull-requests:write` is the only existing permission the backport bot will need for opening up pull requests. 
 
+Note: Due to Github restricting access for forked repos, the maximum access for `contents` an external contributor can get is `read`. This means that backporting external contributor's PRs will not be supported. 
+
+See [permissions for the Github token](https://docs.github.com/en/actions/security-guides/automatic-token-authentication#permissions-for-the-github_token).
