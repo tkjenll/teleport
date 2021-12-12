@@ -275,7 +275,7 @@ test: CHAOS_FOLDERS := $(shell find . -type f -name '*chaos*.go' -not -path '*/v
 test: $(VERSRC)
 	echo "Looking for BPF" 
 	find /usr -iname "libbpf*" || true
-	nm -gD /usr/lib/x86_64-linux-gnu/libbcc.so.0 | grep -E "\W(bpf|bcc)_ 
+	nm -gD /usr/lib/x86_64-linux-gnu/libbcc.so.0 | grep -E "\W(bpf|bcc)_"
 
 	echo "Running test" 
 	go test -tags "$(PAM_TAG) $(FIPS_TAG) $(BPF_TAG)" $(PACKAGES) $(FLAGS) $(ADDFLAGS)
