@@ -274,7 +274,7 @@ test: PACKAGES := $(shell go list ./... | grep -v integration)
 test: CHAOS_FOLDERS := $(shell find . -type f -name '*chaos*.go' -not -path '*/vendor/*' | xargs dirname | uniq)
 test: $(VERSRC)
 	echo "Looking for BPF" 
-	find /usr -iname "libbpf*" || true
+	find /usr -iname "libbcc*" || true
 	nm -gD /usr/lib/x86_64-linux-gnu/libbcc.so.0 | grep -E "\W(bpf|bcc)_"
 
 	echo "Running test" 
