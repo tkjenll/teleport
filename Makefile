@@ -278,7 +278,7 @@ test: $(VERSRC)
 	nm -gD /usr/lib/x86_64-linux-gnu/libbcc.so.0 | grep -E "\W(bpf|bcc)_"
 
 	echo "Running test" 
-	go test -tags "$(PAM_TAG) $(FIPS_TAG) $(BPF_TAG)" $(PACKAGES) $(FLAGS) $(ADDFLAGS)
+	go test -v -tags "$(PAM_TAG) $(FIPS_TAG) $(BPF_TAG)" $(PACKAGES) $(FLAGS) $(ADDFLAGS)
 	go test -tags "$(PAM_TAG) $(FIPS_TAG) $(BPF_TAG)" -test.run=TestChaos $(CHAOS_FOLDERS) -cover
 
 # Runs API Go tests. These have to be run separately as the package name is different.

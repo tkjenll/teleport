@@ -26,6 +26,8 @@ import (
 	"github.com/iovisor/gobpf/pkg/cpuonline"
 )
 
+// TODO(tcc): REVERT BEFORE MERGE!
+
 // #cgo CFLAGS: -I/usr/include/bcc/compat
 // #cgo LDFLAGS: -ldl
 //
@@ -41,6 +43,7 @@ import (
 //
 // extern char *bcc_library_name();
 // extern int init_symlookup(void *);
+// extern char *so_name(void *);
 // extern int _bpf_prog_load(enum bpf_prog_type, const char *, const struct bpf_insn *, int, const char *, unsigned, int, char *, unsigned);
 // extern int _bpf_attach_kprobe(int, enum bpf_probe_attach_type, const char *, const char *, uint64_t, int);
 // extern void *_bpf_module_create_c_from_string(const char *, unsigned, const char *[], int, bool, const char *);
@@ -118,12 +121,19 @@ func init() {
 func newModule(code string, cflags []string) *Module {
 	// Open libbcc and initialize the symbol lookup table.
 	if bccHandle == nil {
+		fmt.Printf("*** Library handle not set\n")
 		return nil
 	}
 	retval := C.init_symlookup(bccHandle)
 	if retval == -1 {
+		fmt.Printf("*** Failed sym lookup %d\n", retval)
+		soPath := C.GoString(C.so_name(bccHandle))
+		fmt.Printf("*** SO loaded from %s\n", soPath)
 		return nil
 	}
+
+	soPath := C.GoString(C.so_name(bccHandle))
+	fmt.Printf("*** SO loaded from %s\n", soPath)
 
 	cflagsC := make([]*C.char, len(defaultCflags)+len(cflags))
 	defer func() {

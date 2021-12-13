@@ -12,6 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// TODO(tcc): REVERT BEFORE MERGE!
+
+#define _GNU_SOURCE
+#include <dlfcn.h>
+
+
 #include "_cgo_export.h"
 #include <stdio.h>
 #include <stdbool.h>
@@ -21,7 +27,6 @@
   #include <bcc/bpf_common.h>
 #endif
 #include <bcc/libbpf.h>
-#include <dlfcn.h>
 
 // bcc_library_name returns the name of the library to load at runtime.
 char *bcc_library_name()
@@ -82,6 +87,12 @@ void *symlookup[SYM_TABLE_SIZE];
 // is very common in OS packages.
 bool older_package = false;
 char *prog_load_sym_name = "bcc_prog_load";
+
+const char* so_name(void *handle) {
+    Dl_info dli = {0};
+    dladdr(symlookup[BCC_FOREACH_FUNCTION_SYMBOL], &dli);
+    return dli.dli_fname;
+}
 
 // init_symlookup initializes the symbol lookup table.
 int init_symlookup(void *handle) {
