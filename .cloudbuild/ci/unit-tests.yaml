@@ -8,7 +8,7 @@ steps:
 
   - name: us-docker.pkg.dev/ci-account/teleport/buildbox-root:teleport6.2-v0.1.0
     id: reconfigure-for-nonroot-user
-    args: ['chown', '-R', 'ci:ci', '/workspace']
+    args: [chown, -R, ci:ci, /workspace]
 
   - name: us-docker.pkg.dev/ci-account/teleport/buildbox-nonroot:teleport6.2-v0.1.0
     id: unit-test
@@ -22,10 +22,11 @@ steps:
       - -c
       - (make run-etcd &); sleep 1; make test
     timeout: 15m
-    
+
 timeout: 15m
 options:
   env: 
-    - GOMODCACHE=/workspace/.gomodcacheci
+    - GOCACHE=/workspace/.gocache-ci
+    - GOMODCACHE=/workspace/.gomodcache-ci
   machineType: 'E2_HIGHCPU_32'
   
