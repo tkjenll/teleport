@@ -1,4 +1,8 @@
 steps:
+  - name: us-docker.pkg.dev/ci-account/teleport/buildbox-root:teleport6.2-v0.1.0
+    id: nonroot-setup
+    args: ['chown', '-R', 'ci:ci', '/workspace']
+
   - name: us-docker.pkg.dev/ci-account/teleport/buildbox-nonroot:teleport6.2-v0.1.0
     id: unit-test
     env:
