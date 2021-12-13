@@ -1,5 +1,12 @@
 steps:
   - name: us-docker.pkg.dev/ci-account/teleport/buildbox-root:teleport6.2-v0.1.0
+    id: export-bcc-headers
+    volumes:
+      - name: bcc-include
+        path: /bcc-include
+    args: [cp, -R, /bcc-include, /workspace/build.assets/bcc]
+
+  - name: us-docker.pkg.dev/ci-account/teleport/buildbox-root:teleport6.2-v0.1.0
     id: reconfigure-for-nonroot-user
     args: ['chown', '-R', 'ci:ci', '/workspace']
 
@@ -7,11 +14,15 @@ steps:
     id: unit-test
     env:
       - TELEPORT_ETCD_TEST="yes"
-    entrypoint: '/bin/bash'
+    volumes:
+      - name: bcc-include
+        path: /usr/include/bcc
+    entrypoint: /bin/bash
     args: 
-      - '-c'
-      - 'rm -rf /usr/include/bcc; ln -s /workspace/build.assets/bcc /usr/include/bcc; (make run-etcd &); sleep 1; make test'
+      - -c
+      - (make run-etcd &); sleep 1; make test
     timeout: 15m
+    
 timeout: 15m
 options:
   env: 
