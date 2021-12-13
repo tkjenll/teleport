@@ -1,6 +1,6 @@
 steps:
   - name: us-docker.pkg.dev/ci-account/teleport/buildbox-root:teleport6.2-v0.1.0
-    id: nonroot-setup
+    id: reconfigure-for-nonroot-user
     args: ['chown', '-R', 'ci:ci', '/workspace']
 
   - name: us-docker.pkg.dev/ci-account/teleport/buildbox-nonroot:teleport6.2-v0.1.0
@@ -14,5 +14,7 @@ steps:
     timeout: 15m
 timeout: 15m
 options:
+  env: 
+    - GOMODCACHE=/workspace/.gomodcacheci
   machineType: 'E2_HIGHCPU_32'
   
